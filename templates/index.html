@@ -1,23 +1,53 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Itinerary Generator</title>
-</head>
-<body>
-    <h1>Itinerary Generator</h1>
-    <form method="POST">
-        <input type="text" name="origin" placeholder="Origin"><br>
-        <input type="text" name="destination" placeholder="Destination"><br>
-        <input type="number" name="days" placeholder="Days"><br>
-        <input type="number" name="budget" placeholder="Budget"><br>
-        <input type="text" name="cuisine_preference" placeholder="Cuisine Preference"><br>
-        <input type="number" name="people_number" placeholder="People Traveling"><br>
-        <input type="text" name="interests" placeholder="Interests"><br>
-        <button type="submit">Generate Itinerary</button>
-    </form>
-    {% if itinerary %}
-        <h2>Itinerary:</h2>
-        <div style="white-space: pre-line;">{{ itinerary }}</div>
-    {% endif %}
-</body>
-</html>
+"use client";
+
+import { useState } from "react";
+
+export default function ItineraryGenerator() {
+    const [formData, setFormData] = useState({
+        origin: "",
+        destination: "",
+        days: "",
+        budget: "",
+        cuisine_preference: "",
+        people_number: "",
+        interests: ""
+    });
+    const [itinerary, setItinerary] = useState("");
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const response = await fetch("/api/generate-itinerary", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+        });
+        const data = await response.json();
+        setItinerary(data.itinerary);
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">Itinerary Generator</h1>
+            <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-4">
+                <input className="w-full p-2 border rounded" type="text" name="origin" placeholder="Origin" onChange={handleChange} />
+                <input className="w-full p-2 border rounded" type="text" name="destination" placeholder="Destination" onChange={handleChange} />
+                <input className="w-full p-2 border rounded" type="number" name="days" placeholder="Days" onChange={handleChange} />
+                <input className="w-full p-2 border rounded" type="number" name="budget" placeholder="Budget" onChange={handleChange} />
+                <input className="w-full p-2 border rounded" type="text" name="cuisine_preference" placeholder="Cuisine Preference" onChange={handleChange} />
+                <input className="w-full p-2 border rounded" type="number" name="people_number" placeholder="People Traveling" onChange={handleChange} />
+                <input className="w-full p-2 border rounded" type="text" name="interests" placeholder="Interests" onChange={handleChange} />
+                <button className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition" type="submit">Generate Itinerary</button>
+            </form>
+            {itinerary && (
+                <div className="mt-6 bg-white p-6 rounded-lg shadow-lg w-96">
+                    <h2 className="text-xl font-bold text-gray-800">Itinerary:</h2>
+                    <p className="text-gray-700 whitespace-pre-line">{itinerary}</p>
+                </div>
+            )}
+        </div>
+    );
+}
