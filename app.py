@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template, Markup
+from flask import Flask, request, render_template
+from markupsafe import Markup
 import os
 import google.generativeai as genai
 import textwrap
