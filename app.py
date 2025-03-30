@@ -62,5 +62,5 @@ def itinerary_generator():
 
 if __name__ == '__main__':
     # Remove debug=True for production
-    # app.run(debug=True)
+    app.run(debug=True)
     pass #gunicorn will run the app.
